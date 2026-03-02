@@ -1,0 +1,82 @@
+class Solution {
+    public int[] sortedSquares(int[] nums) {
+
+        int n = nums.length;
+
+        ArrayList<Integer> neg = new ArrayList<>();
+        ArrayList<Integer> pos = new ArrayList<>();
+
+        // Step 1: Separate negative and positive numbers
+        for (int i = 0; i < n; i++) {
+            if (nums[i] < 0) {
+                neg.add(nums[i]);
+            } else {
+                pos.add(nums[i]);
+            }
+        }
+
+        // Case 1: Only positive numbers
+        if (neg.size() == 0) {
+            int[] result = new int[pos.size()];
+            for (int i = 0; i < pos.size(); i++) {
+                result[i] = pos.get(i) * pos.get(i);
+            }
+            return result;
+        }
+
+        // Case 2: Only negative numbers
+        if (pos.size() == 0) {
+            int[] result = new int[neg.size()];
+            int index = 0;
+
+            // Square and store in reverse order
+            for (int i = neg.size() - 1; i >= 0; i--) {
+                result[index++] = neg.get(i) * neg.get(i);
+            }
+            return result;
+        }
+
+        // Case 3: Both negative and positive exist
+
+        int n1 = neg.size();
+        int n2 = pos.size();
+
+        // Square negatives
+        for (int i = 0; i < n1; i++) {
+            neg.set(i, neg.get(i) * neg.get(i));
+        }
+
+        // Reverse negatives
+        Collections.reverse(neg);
+
+        // Square positives
+        for (int i = 0; i < n2; i++) {
+            pos.set(i, pos.get(i) * pos.get(i));
+        }
+
+        // Merge two sorted lists
+        int i = 0;
+        int j = 0;
+        int k = 0;
+
+        int[] result = new int[n1 + n2];
+
+        while (i < n1 && j < n2) {
+            if (neg.get(i) <= pos.get(j)) {
+                result[k++] = neg.get(i++);
+            } else {
+                result[k++] = pos.get(j++);
+            }
+        }
+
+        while (i < n1) {
+            result[k++] = neg.get(i++);
+        }
+
+        while (j < n2) {
+            result[k++] = pos.get(j++);
+        }
+
+        return result;
+    }
+}
